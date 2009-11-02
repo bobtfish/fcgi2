@@ -1,0 +1,15 @@
+perl/FCGI.bs
+perl/FCGI.c
+perl/FCGI.cfg
+perl/FCGI.o
+perl/FCGI.pm
+perl/FCGI.xs
+perl/Makefile
+perl/blib/
+perl/config.log
+perl/config.status
+perl/fcgi_config.h
+perl/fcgiapp.o
+perl/os_unix.o
+perl/pm_to_blib
+
