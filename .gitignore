@@ -12,4 +12,7 @@ perl/fcgi_config.h
 perl/fcgiapp.o
 perl/os_unix.o
 perl/pm_to_blib
-
+autom4te.cache/
+configure
+perl/autom4te.cache/
+perl/configure
