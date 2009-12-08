@@ -1,3 +1,11 @@
+confdefs.h
+config.cache
+config.log
+perl/aclocal.m4
+perl/confdefs.h
+perl/config.cache
+perl/config.h.in
+perl/fcgi_config.h.in
 perl/FCGI.bs
 perl/FCGI.c
 perl/FCGI.cfg
