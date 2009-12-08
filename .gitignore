@@ -1,3 +1,7 @@
+perl/FCGI-*
+perl/echo.fpl
+perl/remote.fpl
+perl/threaded.fpl
 confdefs.h
 config.cache
 config.log
