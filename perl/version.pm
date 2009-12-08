@@ -1,3 +1,4 @@
 package FCGI;
 
-$VERSION = '0.67';
+$VERSION = '0.67_01';
+$VERSION = eval $VERSION;
