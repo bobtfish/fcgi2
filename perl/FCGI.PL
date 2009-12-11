@@ -24,9 +24,11 @@ require DynaLoader;
 
 EOP
 
-print OUT '$VERSION = '.MM->parse_version('version.pm').";\n\n";
+print OUT '$VERSION = q{'.MM->parse_version('version.pm')."};\n\n";
 
 print OUT "bootstrap FCGI;\n" unless ($pure);
+
+print OUT '$VERSION = eval $VERSION;';
 
 print OUT <<'EOP' if ($pure);
 use Symbol;
