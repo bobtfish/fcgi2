@@ -1,4 +1,7 @@
-Version 0.67_01 UNRELEASED
+Version 0.68 --     31 Dec 2009  <mst@shadowcat.co.uk> Matt S Trout
+    o No changes since the previous development release.
+
+Version 0.67_01 --   20 Dec 2009  <mst@shadowcat.co.uk> Matt S Trout
     o Add FILENO method which returns a defined but invalid value to
       placate things such as IPC::Run which call fileno to check if a
       filehandle is open.
