@@ -1,3 +1,5 @@
+autom4te.cache
+perl/autom4te.cache
 perl/Makefile.old
 perl/FCGI-*
 perl/echo.fpl
