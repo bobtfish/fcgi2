@@ -1,3 +1,6 @@
+    o Make the PRINT method return the number of bytes written rather than
+      undef to be consistent with the IO:: interface. Fixes RT#24347
+      <David Dick>
     o Fix UTF-8 double encoding when FCGI is passed octets by downgrading
       them into bytes correctly. Fixes RT#52400 <chansen@cpan.org>
 
