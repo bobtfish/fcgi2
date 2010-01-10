@@ -1,3 +1,6 @@
+    o Fix UTF-8 double encoding when FCGI is passed octets by downgrading
+      them into bytes correctly. Fixes RT#52400 <chansen@cpan.org>
+
 Version 0.68 --     31 Dec 2009  <mst@shadowcat.co.uk> Matt S Trout
     o No changes since the previous development release.
 

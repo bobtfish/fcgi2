@@ -543,7 +543,12 @@ PRINT(stream, ...)
 	CODE:
 	for (n = 1; n < items; ++n) {
             STRLEN len;
-            register char *tmps = (char *)SvPV(ST(n),len);
+            register char *tmps; 
+#ifdef DO_UTF8
+            if (DO_UTF8(ST(n)) && !sv_utf8_downgrade(ST(n), 1))
+                croak("Wide character in FCGI::Stream::PRINT");
+#endif
+            tmps = (char *)SvPV(ST(n),len);
             FCGX_PutStr(tmps, len, stream);
 	}
 	if (SvTRUEx(perl_get_sv("|", FALSE))) 
@@ -563,6 +568,10 @@ WRITE(stream, bufsv, len, ...)
 
 	CODE:
 	offset = (items == 4) ? (int)SvIV(ST(3)) : 0;
+#ifdef DO_UTF8
+    if (DO_UTF8(bufsv) && !sv_utf8_downgrade(bufsv, 1))
+         croak("Wide character in FCGI::Stream::WRITE");
+#endif
 	buf = SvPV(bufsv, blen);
 	if (offset < 0) offset += blen;
 	if (len > blen - offset)
@@ -572,7 +581,7 @@ WRITE(stream, bufsv, len, ...)
 	    ST(0) = &PL_sv_undef;
 	else {
 	    ST(0) = sv_newmortal();
-	    sv_setpvf(ST(0), "%c", n);
+	    sv_setiv(ST(0), n);
 	}
 
 int
@@ -587,6 +596,10 @@ READ(stream, bufsv, len, ...)
 
 	CODE:
 	offset = (items == 4) ? (int)SvIV(ST(3)) : 0;
+#ifdef DO_UTF8
+    if (DO_UTF8(bufsv) && !sv_utf8_downgrade(bufsv, 1))
+         croak("Wide character in FCGI::Stream::READ");
+#endif
 	if (! SvOK(bufsv))
 	    sv_setpvn(bufsv, "", 0);
 	buf = SvGROW(bufsv, len+offset+1);
