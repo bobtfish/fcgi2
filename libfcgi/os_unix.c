@@ -181,7 +181,7 @@ int OS_LibInit(int stdioFds[3])
     FD_ZERO(&readFdSetPost);
     FD_ZERO(&writeFdSetPost);
 
-    OS_InstallSignalHandlers(FALSE);
+    OS_InstallSignalHandlers(TRUE);
 
     libInitialized = TRUE;
 

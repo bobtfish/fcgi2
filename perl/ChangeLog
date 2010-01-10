@@ -1,3 +1,5 @@
+    o Force signal handler installation so that we correctly install handlers
+      for SIGPIPE. Fixes RT#5100 <bobtfish@bobtfish.net>
     o Make the PRINT method return the number of bytes written rather than
       undef to be consistent with the IO:: interface. Fixes RT#24347
       <David Dick>
