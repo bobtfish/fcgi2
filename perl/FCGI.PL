@@ -261,13 +261,10 @@ sub READ {
 
 sub PRINT {
     my ($stream) = shift;
-    my $bytes = 0;
     for (@_) {
-        my $len = length($_);
-        $stream->{src}->write($stream->{type}, $_, $len);
-        $bytes += $len;
+        $stream->{src}->write($stream->{type}, $_, length($_));
     }
-    return $bytes;
+    return 1;
 }
 
 sub CLOSE {

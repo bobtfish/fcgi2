@@ -1,3 +1,6 @@
+    o Make the PRINT method return a boolean value rather than the
+	  number of bytes written, previous patch was incorrect.
+
 Version 0.68_01 --   10 Jan 2010  <mst@shadowcat.co.uk> Matt S Trout
     o Force signal handler installation so that we correctly install handlers
       for SIGPIPE. Fixes RT#5100 <bobtfish@bobtfish.net>

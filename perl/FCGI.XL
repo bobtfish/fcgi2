@@ -539,13 +539,9 @@ PRINT(stream, ...)
 
 	PREINIT:
 	int	n;
-    int retval;
-    int bytes_written;
 
 	CODE:
-    retval = 0;
-    bytes_written = 0;
-    for (n = 1; n < items && bytes_written >= 0; ++n) {
+    for (n = 1; n < items; ++n) {
             STRLEN len;
             register char *tmps; 
 #ifdef DO_UTF8
@@ -553,14 +549,11 @@ PRINT(stream, ...)
                 croak("Wide character in FCGI::Stream::PRINT");
 #endif
             tmps = (char *)SvPV(ST(n),len);
-	        bytes_written = FCGX_PutStr(tmps, len, stream);
-            if (bytes_written > 0) {
-                retval += bytes_written;
-            }
+	        FCGX_PutStr(tmps, len, stream);
     }
 	if (SvTRUEx(perl_get_sv("|", FALSE))) 
 	    FCGX_FFlush(stream);
-    RETVAL = retval;
+    RETVAL = 1;
 
     OUTPUT:
     RETVAL
