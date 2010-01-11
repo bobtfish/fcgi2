@@ -20,7 +20,7 @@ perl/FCGI.o
 perl/FCGI.pm
 perl/FCGI.xs
 perl/Makefile
-perl/blib/
+perl/blib
 perl/config.log
 perl/config.status
 perl/fcgi_config.h
