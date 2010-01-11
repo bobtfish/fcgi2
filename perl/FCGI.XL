@@ -533,30 +533,35 @@ MODULE = FCGI		PACKAGE = FCGI::Stream
 
 #ifndef USE_SFIO
 
-int
+void
 PRINT(stream, ...)
 	FCGI::Stream	stream;
 
 	PREINIT:
-	int	n;
+    int n, sum = 0, ret = 0;
+    STRLEN len;
+    register char *str;
 
 	CODE:
     for (n = 1; n < items; ++n) {
-            STRLEN len;
-            register char *tmps; 
 #ifdef DO_UTF8
             if (DO_UTF8(ST(n)) && !sv_utf8_downgrade(ST(n), 1))
                 croak("Wide character in FCGI::Stream::PRINT");
 #endif
-            tmps = (char *)SvPV(ST(n),len);
-	        FCGX_PutStr(tmps, len, stream);
-    }
-	if (SvTRUEx(perl_get_sv("|", FALSE))) 
-	    FCGX_FFlush(stream);
-    RETVAL = 1;
+        str = (char *)SvPV(ST(n),len);
+        if ((ret = FCGX_PutStr(str, len, stream)) < 0)
+            break;
 
-    OUTPUT:
-    RETVAL
+        sum += ret;
+    }
+
+    if (sum == 0 && ret < 0)
+        XSRETURN_UNDEF;
+
+
+	if (SvTRUEx(perl_get_sv("|", FALSE)))
+	    FCGX_FFlush(stream);
+    XSRETURN_YES;
 
 int
 WRITE(stream, bufsv, len, ...)
