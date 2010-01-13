@@ -1,3 +1,3 @@
 package FCGI;
 
-$VERSION = '0.68_01';
+$VERSION = '0.68_02';
