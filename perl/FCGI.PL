@@ -294,7 +294,7 @@ sub Request(;***$*$) {
 
 sub accept() {
     warn "accept called as a method; you probably wanted to call Accept" if @_;
-    if (defined %FCGI::ENV) {
+    if (%FCGI::ENV) {
 	%ENV = %FCGI::ENV;
     } else {
 	%FCGI::ENV = %ENV;
