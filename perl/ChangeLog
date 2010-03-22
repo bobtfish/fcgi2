@@ -1,3 +1,6 @@
+Version 0.69 --     15 Feb 2010  <mst@shadowcat.co.uk> Matt S Trout
+    o No changes since the previous development release.
+
 Version 0.68_02 --   13 Jan 2010  <mst@shadowcat.co.uk> Matt S Trout
     o Make the PRINT method return a boolean value rather than the
 	  number of bytes written, previous patch was incorrect.
