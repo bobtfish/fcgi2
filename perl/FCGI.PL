@@ -313,7 +313,7 @@ sub accept() {
 
 sub finish() {
     warn "finish called as a method; you probably wanted to call Finish" if @_;
-    %ENV = %FCGI::ENV if (defined %FCGI::ENV);
+    %ENV = %FCGI::ENV if %FCGI::ENV;
 
     # not SFIO
     if (tied (*STDIN)) {
