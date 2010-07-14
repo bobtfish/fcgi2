@@ -565,6 +565,21 @@ Returns whether or not the program was run as a FastCGI.
 
 =back
 
+=HEAD1 LIMITATIONS
+
+FCGI.pm isn't Unicode aware, only characters within the range 0x00-0xFF are 
+supported. Attempts to output strings containing characters above 0xFF results
+in a exception: (F) C<Wide character in %s>.
+
+Users who wants the previous (FCGI.pm <= 0.68) incorrect behavior can disable the
+exception by using the C<bytes> pragma.
+
+    {
+        use bytes;
+        print "\x{263A}";
+    }
+
+
 =head1 AUTHOR
 
 Sven Verdoolaege <skimo@kotnet.org>
