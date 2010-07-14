@@ -558,6 +558,8 @@ PRINT(stream, ...)
 	    ok = FALSE;
 
     RETVAL = ok ? &PL_sv_yes : &PL_sv_undef;
+    OUTPUT:
+        RETVAL
 
 int
 WRITE(stream, bufsv, len, ...)

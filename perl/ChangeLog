@@ -1,3 +1,5 @@
+    o Fix PRINT retval (Closes: RT#57697).
+
 Version 0.71 --      1 Apr 2010  <rafl@debian.org> Florian Ragwitz
     o Fix some more defined(%hash) warnings on perl 5.12.
 
