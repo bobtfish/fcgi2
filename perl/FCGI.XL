@@ -543,11 +543,11 @@ PRINT(stream, ...)
     register char *str;
     bool ok = TRUE;
 
-	CODE:
+    CODE:
     for (n = 1; ok && n < items; ++n) {
 #ifdef DO_UTF8
-        if (DO_UTF8(ST(n)) && !sv_utf8_downgrade(ST(n), 1))
-            croak("Wide character in FCGI::Stream::PRINT");
+        if (DO_UTF8(ST(n)) && !sv_utf8_downgrade(ST(n), 1) && ckWARN_d(WARN_UTF8))
+            Perl_warner(aTHX_ WARN_UTF8, "Wide character in FCGI::Stream::PRINT");
 #endif
         str = (char *)SvPV(ST(n),len);
         if (FCGX_PutStr(str, len, stream) < 0)
@@ -576,8 +576,8 @@ WRITE(stream, bufsv, len, ...)
 	CODE:
 	offset = (items == 4) ? (int)SvIV(ST(3)) : 0;
 #ifdef DO_UTF8
-    if (DO_UTF8(bufsv) && !sv_utf8_downgrade(bufsv, 1))
-         croak("Wide character in FCGI::Stream::WRITE");
+    if (DO_UTF8(bufsv) && !sv_utf8_downgrade(bufsv, 1) && ckWARN_d(WARN_UTF8))
+         Perl_warner(aTHX_ WARN_UTF8, "Wide character in FCGI::Stream::WRITE");
 #endif
 	buf = SvPV(bufsv, blen);
 	if (offset < 0) offset += blen;
