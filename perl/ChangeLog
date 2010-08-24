@@ -1,4 +1,11 @@
-    o Fix PRINT retval (Closes: RT#57697).
+Version 0.71_01 --   24 Aug 2010 <bobtfish@bobtfish.net>
+   o Restore old behavior when un-downgradeable uft8 is sent to FCGI.
+     The first time this happens, a warning will be issued, but subsequently
+     the bytes will be sent through raw (causing double encoding etc).
+     If the character string can be downgraded safely, then it will still be.
+     use warnings FATAL => 'utf8'; can be used to make undowngradeable strings
+     throw an exception.
+   o Fix PRINT retval (Closes: RT#57697).
 
 Version 0.71 --      1 Apr 2010  <rafl@debian.org> Florian Ragwitz
     o Fix some more defined(%hash) warnings on perl 5.12.
