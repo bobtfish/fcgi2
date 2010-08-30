@@ -434,8 +434,8 @@ READ(stream, bufsv, len, ...)
   CODE:
     offset = (items == 4) ? (int)SvIV(ST(3)) : 0;
 #ifdef DO_UTF8
-    if (DO_UTF8(bufsv) && !sv_utf8_downgrade(bufsv, 1))
-         croak("Wide character in FCGI::Stream::READ");
+    if (DO_UTF8(bufsv) && !sv_utf8_downgrade(bufsv, 1) && ckWARN_d(WARN_UTF8))
+         Perl_warner(aTHX_ WARN_UTF8, "Wide character in FCGI::Stream::READ");
 #endif
     if (!SvOK(bufsv))
         sv_setpvn(bufsv, "", 0);
