@@ -423,31 +423,44 @@ WRITE(stream, bufsv, len, ...)
         sv_setiv(ST(0), n);
     }
 
-int
+void
 READ(stream, bufsv, len, ...)
     FCGI::Stream stream;
     SV *bufsv;
     int len;
   PREINIT:
-    int offset;
+    int offset = 0;
     char *buf;
+    STRLEN blen;
   CODE:
-    offset = (items == 4) ? (int)SvIV(ST(3)) : 0;
+    if (items < 3 || items > 4)
+        croak("Usage: FCGI::Stream::READ(STREAM, SCALAR, LENGTH [, OFFSET ])");
+    if (len < 0)
+        croak("Negative length");
+    if (!SvOK(bufsv))
+        sv_setpvn(bufsv, "", 0);
 #ifdef DO_UTF8
     if (DO_UTF8(bufsv) && !sv_utf8_downgrade(bufsv, 1) && ckWARN_d(WARN_UTF8))
          Perl_warner(aTHX_ WARN_UTF8, "Wide character in FCGI::Stream::READ");
 #endif
-    if (!SvOK(bufsv))
-        sv_setpvn(bufsv, "", 0);
-    buf = SvGROW(bufsv, len+offset+1);
-    len = FCGX_GetStr(buf+offset, len, stream);
-    SvCUR_set(bufsv, len+offset);
+    buf = SvPV_force(bufsv, blen);
+    if (items == 4) {
+        offset = SvIV(ST(3));
+        if (offset < 0) {
+            if (-offset > (int)blen)
+                croak("Offset outside string");
+            offset += blen;
+        }
+    }
+    buf = SvGROW(bufsv, len + offset + 1);
+    if (offset > blen)
+        Zero(buf + blen, offset - blen, char);
+    len = FCGX_GetStr(buf + offset, len, stream);
+    SvCUR_set(bufsv, len + offset);
     *SvEND(bufsv) = '\0';
     (void)SvPOK_only(bufsv);
     SvSETMAGIC(bufsv);
-    RETVAL = len;
-  OUTPUT:
-    RETVAL
+    XSRETURN_IV(len);
 
 SV *
 GETC(stream)
