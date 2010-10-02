@@ -195,8 +195,12 @@ FCGI_Finish(FCGP_Request* request) {
 
     if (was_bound = request->bound)
         FCGI_UndoBinding(request);
-    if (was_bound)
+    if (was_bound) {
+        FCGX_Stream *stream = request->requestPtr->in;
+        if (stream && FCGX_GetChar(stream) != EOF)
+            warn("implicit discarding of input stream");
         FCGX_Finish_r(request->requestPtr);
+    }
     else
         FCGX_Free(request->requestPtr, 1);
     request->accepted = FALSE;
