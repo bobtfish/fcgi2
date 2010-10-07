@@ -38,6 +38,11 @@ __END__
 #define INT2PTR(a,b) ((a) (b))
 #endif
 
+/* Deprecation added 2010-10-05.  The deprecated functionality should not be
+ * removed for at least a year after that. */
+#define WIDE_CHAR_DEPRECATION_MSG "Use of wide characters in %s is deprecated" \
+  " and will stop wprking in a future version of FCGI"
+
 #if defined(USE_LOCKING) && defined(USE_THREADS)
 static perl_mutex accept_mutex;
 #endif
@@ -383,7 +388,8 @@ PRINT(stream, ...)
     for (n = 1; ok && n < items; ++n) {
 #ifdef DO_UTF8
         if (DO_UTF8(ST(n)) && !sv_utf8_downgrade(ST(n), 1) && ckWARN_d(WARN_UTF8))
-            Perl_warner(aTHX_ WARN_UTF8, "Wide character in FCGI::Stream::PRINT");
+            Perl_warner(aTHX_ WARN_UTF8, WIDE_CHAR_DEPRECATION_MSG,
+                        "FCGI::Stream::PRINT");
 #endif
         str = (char *)SvPV(ST(n),len);
         if (FCGX_PutStr(str, len, stream) < 0)
@@ -409,7 +415,8 @@ WRITE(stream, bufsv, len, ...)
     offset = (items == 4) ? (int)SvIV(ST(3)) : 0;
 #ifdef DO_UTF8
     if (DO_UTF8(bufsv) && !sv_utf8_downgrade(bufsv, 1) && ckWARN_d(WARN_UTF8))
-         Perl_warner(aTHX_ WARN_UTF8, "Wide character in FCGI::Stream::WRITE");
+         Perl_warner(aTHX_ WARN_UTF8, WIDE_CHAR_DEPRECATION_MSG,
+                     "FCGI::Stream::WRITE");
 #endif
     buf = SvPV(bufsv, blen);
     if (offset < 0) offset += blen;
@@ -441,7 +448,8 @@ READ(stream, bufsv, len, ...)
         sv_setpvn(bufsv, "", 0);
 #ifdef DO_UTF8
     if (DO_UTF8(bufsv) && !sv_utf8_downgrade(bufsv, 1) && ckWARN_d(WARN_UTF8))
-         Perl_warner(aTHX_ WARN_UTF8, "Wide character in FCGI::Stream::READ");
+         Perl_warner(aTHX_ WARN_UTF8, WIDE_CHAR_DEPRECATION_MSG,
+                     "FCGI::Stream::READ");
 #endif
     buf = SvPV_force(bufsv, blen);
     if (items == 4) {
