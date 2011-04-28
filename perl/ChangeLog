@@ -1,3 +1,4 @@
+Version 0.71_03 --  28 Apr 2011 <bobtfish@bobtfish.net>
    o Remove support for sfio which is an optional (and not enabled by default)
      compile option to perl that is never used.
    o Fix FCGI::Stream::READ() to warn() instead of croak() incase of
