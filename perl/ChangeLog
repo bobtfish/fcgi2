@@ -1,4 +1,5 @@
 
+Version 0.71_02 --  28 Apr 2011 <bobtfish@bobtfish.net>
    o Change the Request function to pass FAIL_ON_INTR into the XS
      RequestX function. This prevents the fcgi C client code from
      looping around their accept() call. This change means that
