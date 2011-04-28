@@ -286,7 +286,7 @@ __END__
 *FAIL_ACCEPT_ON_INTR = sub() { 1 };
 
 sub Request(;***$*$) {
-    my @defaults = (\*STDIN, \*STDOUT, \*STDERR, \%ENV, 0, 0);
+    my @defaults = (\*STDIN, \*STDOUT, \*STDERR, \%ENV, 0, FAIL_ACCEPT_ON_INTR());
     $_[4] = fileno($_[4]) if defined($_[4]) && defined(fileno($_[4]));
     splice @defaults,0,@_,@_;
     RequestX(@defaults);

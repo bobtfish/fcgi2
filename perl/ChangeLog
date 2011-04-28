@@ -1,3 +1,11 @@
+
+   o Change the Request function to pass FAIL_ON_INTR into the XS
+     RequestX function. This prevents the fcgi C client code from
+     looping around their accept() call. This change means that
+     when using CGI::Fast, and the process recieves SIGTERM or
+     SIGHUP, the error statusis correctly passed back up, allowing process
+     managers (such as FCGI::ProcManager) to correctly handle cleanly exiting.
+
 Version 0.71_01 --   24 Aug 2010 <bobtfish@bobtfish.net>
    o Restore old behavior when un-downgradeable uft8 is sent to FCGI.
      The first time this happens, a warning will be issued, but subsequently
