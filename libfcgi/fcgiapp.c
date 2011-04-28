@@ -2013,8 +2013,19 @@ void FCGX_Finish_r(FCGX_Request *reqDataPtr)
     if (reqDataPtr->in) {
         close |= FCGX_FClose(reqDataPtr->err);
         close |= FCGX_FClose(reqDataPtr->out);
+        close |= FCGX_GetError(reqDataPtr->in);
 
-	close |= FCGX_GetError(reqDataPtr->in);
+        /* discard any remaining data in input stream */
+        if (!close && !reqDataPtr->in->isClosed) {
+            FCGX_Stream *stream = reqDataPtr->in;
+
+            do {
+                stream->rdNext = stream->stop;
+                stream->fillBuffProc(stream);
+            } while (!stream->isClosed);
+
+            close |= FCGX_GetError(stream);
+        }
     }
 
     FCGX_Free(reqDataPtr, close);
