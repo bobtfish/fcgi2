@@ -1,4 +1,5 @@
-   o Clean up Makefile.PL
+    o Clean up Makefile.PL and restore compatibility with recent
+      ExtUtils::MakeMaker versions.
 
 Version 0.71_03 --  28 Apr 2011 <bobtfish@bobtfish.net>
    o Remove support for sfio which is an optional (and not enabled by default)
