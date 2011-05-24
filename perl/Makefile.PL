@@ -75,6 +75,12 @@ push(@extras,
 )
     if ($ExtUtils::MakeMaker::VERSION >= 5.4301);
 
+push @extras, META_MERGE => {
+    resources => {
+        repository => 'git://git.shadowcat.co.uk/catagits/fcgi2.git',
+    },
+} if $ExtUtils::MakeMaker::VERSION >= 6.46;
+
 $plfiles = {
     'echo.PL' => 'echo.fpl',
     'remote.PL' => 'remote.fpl',
