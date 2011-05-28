@@ -119,7 +119,7 @@ WriteMakefile(
             (map {"libfcgi/$_"} @dist2),
             map {"include/$_"} @dist3).' $(DISTVNAME);'.
                 '$(CP) MANIFEST MANIFEST.old;'.
-                'echo -e '. join('\\\n',@dist1,@dist2,@dist3) .
+                'echo '. join('\\\n',@dist1,@dist2,@dist3) .
                 '>> $(DISTVNAME)/MANIFEST',
                   'POSTOP' => 
                 '$(MV) MANIFEST.old MANIFEST',
