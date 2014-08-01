@@ -47,17 +47,17 @@ use constant AUTHORIZER => 2;
 use constant FILTER => 3;
 
 %FCGI::rolenames = (RESPONDER, "RESPONDER",
-		      AUTHORIZER, "AUTHORIZER",
-		      FILTER, "FILTER",
-		     );
+              AUTHORIZER, "AUTHORIZER",
+              FILTER, "FILTER",
+             );
 
 # This only works on Unix; anyone familiar with Windows is welcome
 # to give a hand here
 sub IsFastCGI {
     my ($req) = @_;
     $req->{isfastcgi} =
-	(!defined getpeername shift->{listen_sock}) && $! == ENOTCONN
-	unless exists $req->{isfastcgi};
+    (!defined getpeername shift->{listen_sock}) && $! == ENOTCONN
+    unless exists $req->{isfastcgi};
     return $req->{isfastcgi};
 }
 
@@ -71,22 +71,22 @@ sub read_nv_len {
     return undef unless read $stream, $buf, 1, 0;
     my ($len) = unpack("C", $buf);
     if ($len & 0x80) {
-	$buf = pack("C", $len & 0x7F);
-	return undef unless read $stream, $buf, 3, 1;
-	$len = unpack("N", $buf);
+    $buf = pack("C", $len & 0x7F);
+    return undef unless read $stream, $buf, 3, 1;
+    $len = unpack("N", $buf);
     }
     $len;
 }
 
 sub RequestX {
     my $self = {
-	in => shift,
-	out => shift,
-	err => shift,
-	env => shift,
-	socket => shift,
-	flags => shift,
-	last => 0,
+    in => shift,
+    out => shift,
+    err => shift,
+    env => shift,
+    socket => shift,
+    flags => shift,
+    last => 0,
     };
     open $self->{listen_sock}, "<&=0";
     bless $self, "FCGI";
@@ -98,21 +98,21 @@ sub Accept {
     my ($req) = @_;
 
     unless ($req->IsFastCGI()) {
-	return -1 if $run_once;
+        return -1 if $run_once;
 
-	$run_once = 1;
-	return 0;
+        $run_once = 1;
+        return 0;
     }
     $req->Finish();
     $req->{socket} = gensym();
     if ($req->{last} || !accept($req->{socket}, $req->{listen_sock})) {
-	$req->{error} = "accept";
-	return -1;
+        $req->{error} = "accept";
+        return -1;
     }
     my ($type, $id, $body) = $req->read_record();
     if ($type != BEGIN_REQUEST) {
-	$req->{error} = "begin request";
-	return -1;
+        $req->{error} = "begin request";
+        return -1;
     }
     my ($role, $flags) = unpack("nC", $body);
     $req->{role} = $role;
@@ -124,11 +124,12 @@ sub Accept {
     my $param = FCGI::Stream->new($req, PARAMS);
     my ($nlen, $vlen);
     while (defined($nlen = read_nv_len($param)) &&
-	   defined($vlen = read_nv_len($param))) {
-	my ($name, $val);
-	read $param, $name, $nlen;
-	read $param, $val, $vlen;
-	$req->{env}{$name} = $val;
+       defined($vlen = read_nv_len($param)))
+    {
+        my ($name, $val);
+        read $param, $name, $nlen;
+        read $param, $val, $vlen;
+        $req->{env}{$name} = $val;
     }
     $req->Bind;
     $req->{accepted} = 1;
@@ -166,10 +167,10 @@ sub Finish {
     my ($req) = @_;
     return unless $req->{accepted};
     if ($req->{bound}) {
-	$req->UndoBindings();
-	# apparently these are harmful
-	# close ${$req->{out}};
-	# close ${$req->{err}};
+        $req->UndoBindings();
+        # apparently these are harmful
+        # close ${$req->{out}};
+        # close ${$req->{err}};
     }
     $req->{accepted} = 0;
 }
@@ -196,16 +197,16 @@ sub read_record {
 sub read {
     my ($self, $rtype, $len) = @_;
     while (length $self->{buf} < $len) {
-	my ($type, $id, $buf) = $self->read_record();
-	return undef unless defined $buf;
-	if ($type != $rtype) {
-	    $self->{error} = "unexpected stream type";
-	    return 0;
-	}
-	$self->{buf} .= $buf;
+        my ($type, $id, $buf) = $self->read_record();
+        return undef unless defined $buf;
+        if ($type != $rtype) {
+            $self->{error} = "unexpected stream type";
+            return 0;
+        }
+        $self->{buf} .= $buf;
     }
     my ($newbuf, $result) = (substr($self->{buf}, $len),
-			     substr($self->{buf}, 0, $len));
+                 substr($self->{buf}, 0, $len));
     $self->{buf} = $newbuf;
     $result;
 }
@@ -224,15 +225,15 @@ sub write_record {
     my ($self, $type, $content, $length) = @_;
     my $offset = 0;
     while ($length > 0) {
-	my $len = $length > 32*1024 ? 32*1024 : $length;
-	my $padlen = (8 - ($len % 8)) % 8;
-	my $templ = "CCnnCxa${len}x$padlen";
-	my $data = pack($templ,
-			VERSION_1, $type, $self->{id}, $len, $padlen,
-			substr($content, $offset, $len));
-	syswrite $self->{socket}, $data;
-	$length -= $len;
-	$offset += $len;
+        my $len = $length > 32*1024 ? 32*1024 : $length;
+        my $padlen = (8 - ($len % 8)) % 8;
+        my $templ = "CCnnCxa${len}x$padlen";
+        my $data = pack($templ,
+            VERSION_1, $type, $self->{id}, $len, $padlen,
+            substr($content, $offset, $len));
+        syswrite $self->{socket}, $data;
+        $length -= $len;
+        $offset += $len;
     }
 }
 
@@ -286,7 +287,7 @@ __END__
 *FAIL_ACCEPT_ON_INTR = sub() { 1 };
 
 sub Request(;***$*$) {
-    my @defaults = (\*STDIN, \*STDOUT, \*STDERR, \%ENV, 0, 0);
+    my @defaults = (\*STDIN, \*STDOUT, \*STDERR, \%ENV, 0, FAIL_ACCEPT_ON_INTR());
     $_[4] = fileno($_[4]) if defined($_[4]) && defined(fileno($_[4]));
     splice @defaults,0,@_,@_;
     RequestX(@defaults);
@@ -295,13 +296,13 @@ sub Request(;***$*$) {
 sub accept() {
     warn "accept called as a method; you probably wanted to call Accept" if @_;
     if (%FCGI::ENV) {
-	%ENV = %FCGI::ENV;
+        %ENV = %FCGI::ENV;
     } else {
-	%FCGI::ENV = %ENV;
+        %FCGI::ENV = %ENV;
     }
     my $rc = Accept($global_request);
     for (keys %FCGI::ENV) {
-	$ENV{$_} = $FCGI::ENV{$_} unless exists $ENV{$_};
+        $ENV{$_} = $FCGI::ENV{$_} unless exists $ENV{$_};
     }
 
     # not SFIO
@@ -313,12 +314,12 @@ sub accept() {
 
 sub finish() {
     warn "finish called as a method; you probably wanted to call Finish" if @_;
-    %ENV = %FCGI::ENV if (defined %FCGI::ENV);
+    %ENV = %FCGI::ENV if %FCGI::ENV;
 
     # not SFIO
     if (tied (*STDIN)) {
-	delete $SIG{__WARN__} if ($SIG{__WARN__} == $warn_handler);
-	delete $SIG{__DIE__} if ($SIG{__DIE__} == $die_handler);
+        delete $SIG{__WARN__} if ($SIG{__WARN__} == $warn_handler);
+        delete $SIG{__DIE__} if ($SIG{__DIE__} == $die_handler);
     }
 
     Finish ($global_request);
@@ -369,14 +370,14 @@ sub READLINE {
 
     $c = $stream->GETC();
     if ($/ eq '') {
-	while ($c eq "\n") {
-	    $c = $stream->GETC();
-	}
+        while ($c eq "\n") {
+            $c = $stream->GETC();
+        }
     }
     while (defined $c) {
-	$s .= $c;
-	last if $c eq $l and substr($s, -$len) eq $rs;
-	$c = $stream->GETC();
+        $s .= $c;
+        last if $c eq $l and substr($s, -$len) eq $rs;
+        $c = $stream->GETC();
     }
     $s;
 }
@@ -384,12 +385,12 @@ sub READLINE {
 sub OPEN {
     $_[0]->CLOSE;
     if (@_ == 2) {
-	return open($_[0], $_[1]);
+        return open($_[0], $_[1]);
     } else {
-	my $rc;
-	eval("$rc = open($_[0], $_[1], $_[2])");
-	die $@ if $@;
-	return $rc;
+        my $rc;
+        eval("$rc = open($_[0], $_[1], $_[2])");
+        die $@ if $@;
+        return $rc;
     }
 }
 
@@ -415,7 +416,7 @@ FCGI - Fast CGI module
     my $request = FCGI::Request();
 
     while($request->Accept() >= 0) {
-	print("Content-type: text/html\r\n\r\n", ++$count);
+        print("Content-type: text/html\r\n\r\n", ++$count);
     }
 
 =head1 DESCRIPTION
@@ -437,7 +438,7 @@ Creates a request handle. It has the following optional parameters:
 =item error perl file handle (default: \*STDERR)
 
 These filehandles will be setup to act as input/output/error
-on succesful Accept.
+on successful Accept.
 
 =item environment hash reference (default: \%ENV)
 
@@ -564,6 +565,21 @@ Returns the file handle parameters passed to FCGI::Request.
 Returns whether or not the program was run as a FastCGI.
 
 =back
+
+=HEAD1 LIMITATIONS
+
+FCGI.pm isn't Unicode aware, only characters within the range 0x00-0xFF are 
+supported. Attempts to output strings containing characters above 0xFF results
+in a exception: (F) C<Wide character in %s>.
+
+Users who wants the previous (FCGI.pm <= 0.68) incorrect behavior can disable the
+exception by using the C<bytes> pragma.
+
+    {
+        use bytes;
+        print "\x{263A}";
+    }
+
 
 =head1 AUTHOR
 

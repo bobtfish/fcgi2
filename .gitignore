@@ -1,4 +1,6 @@
+*.swp
 autom4te.cache
+perl/MYMETA.yml
 perl/autom4te.cache
 perl/Makefile.old
 perl/FCGI-*

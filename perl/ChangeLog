@@ -1,3 +1,51 @@
+Version 0.73 --  19 May 2011 <rafl@debian.org>
+   o Stop claiming we ship a file called -e in the MANIFEST.
+
+Version 0.72 --  19 May 2011 <rafl@debian.org>
+   o Clean up Makefile.PL and restore compatibility with recent
+     ExtUtils::MakeMaker versions.
+
+Version 0.71_03 --  28 Apr 2011 <bobtfish@bobtfish.net>
+   o Remove support for sfio which is an optional (and not enabled by default)
+     compile option to perl that is never used.
+   o Fix FCGI::Stream::READ() to warn() instead of croak() incase of
+     wide characters which cannot be gracefully downgraded.
+   o Fix warnings due to wide characters being mangled to note that accepting
+     them is deprecated and will stop working at some point.
+   o Various fixes to FCGI::Stream::READ() to improve handling of error and
+     edge cases.
+     - croak if called with invalid number of arguments
+     - croak if length is negative
+     - croak if offset is outside string
+     - pad scalar if offset is greater than length
+   o Fix in FCGX_Finish_r to discard any remaining data in input stream
+     which otherwise ends up in next request. This fixes multiple requests
+     being broken if something goes wrong whilst reading the initial request.
+     This discarding is done silently, as RFC 3875 says a script is not
+     obliged to read any of the data.
+   o Fixed indent style and braces to be consistent, swapped tabs for spaces
+     in indenting.
+
+Version 0.71_02 --  28 Apr 2011 <bobtfish@bobtfish.net>
+   o Change the Request function to pass FAIL_ON_INTR into the XS
+     RequestX function. This prevents the fcgi C client code from
+     looping around their accept() call. This change means that
+     when using CGI::Fast, and the process recieves SIGTERM or
+     SIGHUP, the error statusis correctly passed back up, allowing process
+     managers (such as FCGI::ProcManager) to correctly handle cleanly exiting.
+
+Version 0.71_01 --   24 Aug 2010 <bobtfish@bobtfish.net>
+   o Restore old behavior when un-downgradeable uft8 is sent to FCGI.
+     The first time this happens, a warning will be issued, but subsequently
+     the bytes will be sent through raw (causing double encoding etc).
+     If the character string can be downgraded safely, then it will still be.
+     use warnings FATAL => 'utf8'; can be used to make undowngradeable strings
+     throw an exception.
+   o Fix PRINT retval (Closes: RT#57697).
+
+Version 0.71 --      1 Apr 2010  <rafl@debian.org> Florian Ragwitz
+    o Fix some more defined(%hash) warnings on perl 5.12.
+
 Version 0.70 --     22 Mar 2010  <bobtfish@bobtfish.net> Tomas Doran
     o Fix use of defined %hash which becomes deprecated in perl 5.12
 
